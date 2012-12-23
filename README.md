@@ -1,6 +1,6 @@
 CycledViewer
 
-The CycledViewer is a custom controller, Inspired from the ABC News app.It  can be used to cycle a set of custom views.
+The CycledViewer is a custom controller, inspired from the ABC News app.It can be panned up or down to cycle a set of custom views.
 
 License
 Copyright 2012 xiao haibo.
@@ -25,5 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ScreenShot
+<img src="https://raw.github.com/xxhp/CycledViewerDemo/master/screen.png">
+
 
 
