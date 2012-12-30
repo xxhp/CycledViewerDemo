@@ -31,9 +31,10 @@
     text.textColor = [UIColor whiteColor];
     text.editable = NO;
     
-    text.text = @"Pan Up to see the next image\n Pan down to see the last image";
+    text.text = @"Pan up to see the next image\n Pan down to see the last one";
     text.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:text];
+    [text release];
     
 }
 

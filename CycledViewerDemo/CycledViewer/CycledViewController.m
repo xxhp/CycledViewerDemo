@@ -133,10 +133,10 @@
         item.transform = CGAffineTransformMakeScale( 0.10, 0.10);
         item.center = CGPointMake([[centers objectAtIndex:0] CGPointValue].x, [[centers objectAtIndex:0] CGPointValue].y-20);
         [UIView setAnimationsEnabled:YES];
-        CycledView *cell;
+      
         [UIView beginAnimations:nil context:nil];
         for (NSInteger itemIndex = 0; itemIndex < numberOfItems-1; itemIndex++) {
-            cell= [itemViews objectAtIndex:itemIndex];
+            CycledView *cell= [itemViews objectAtIndex:itemIndex];
             [UIView beginAnimations:nil context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationDelay:0.3];
@@ -148,7 +148,7 @@
         
         [itemViews removeObject:item];
         [itemViews insertObject:item atIndex:0];
-        
+        [item release];
         [self reloadViews];
         return;
         
@@ -184,7 +184,7 @@
     item.hidden = NO;
     
     [itemViews addObject:item];
-    
+    [item release];
     item  = [itemViews lastObject];
     [UIView setAnimationsEnabled:NO];
     CGPoint ce = [[centers lastObject] CGPointValue];
@@ -199,7 +199,8 @@
     animation.timingFunction =  [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     animation.duration = 0.5;
     [animation setDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:)];
+    animation.fillMode = kCAFillModeForwards;
+    animation.removedOnCompletion = NO;
     [item.layer addAnimation:animation forKey:@"position"];
     
 }
@@ -213,7 +214,8 @@
     animation.timingFunction =  [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     animation.duration = 0.5;
     [animation setDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:)];
+    animation.fillMode = kCAFillModeForwards;
+    animation.removedOnCompletion = NO;
     [item.layer addAnimation:animation forKey:@"position"];
     
     
@@ -236,7 +238,6 @@
     else if (sender.state == UIGestureRecognizerStateEnded) {
         
         CGFloat toggleCenter = CGRectGetMidY(panItem.frame);
-        NSLog(@"%f",toggleCenter);
         if (toggleCenter<20) {
             [self slideUp];
         }
