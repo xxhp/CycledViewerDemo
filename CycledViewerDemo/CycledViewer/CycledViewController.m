@@ -60,10 +60,10 @@
 -(void)setup{
     
     for (int i = 0;i< numberOfItems ;i++) {
-        CycledView *cell=[[CycledView alloc] initWithTitle:[NSString stringWithFormat:@"Image %d",i] andImage:[UIImage imageNamed:[NSString stringWithFormat:@"%d.png",i+1]] andDelegate:self];
+        CycledView *item=[[CycledView alloc] initWithTitle:[NSString stringWithFormat:@"Image %d",i] andImage:[UIImage imageNamed:[NSString stringWithFormat:@"%d.png",i+1]] andDelegate:self];
         
-        [itemViews addObject:cell];
-        [cell release];
+        [itemViews addObject:item];
+        [item release];
     }
     [self caculateInitState];
     
@@ -80,7 +80,7 @@
         item.controller = self;
         [UIView setAnimationsEnabled:NO];
         item.transform = CGAffineTransformScale(CGAffineTransformIdentity, kScaleFactor+0.25*itemIndex,kScaleFactor+0.25*itemIndex);
-        center.y -=45;
+        center.y -= 45;
         [UIView setAnimationsEnabled:YES];
         [self addSubview:item];
         item.userInteractionEnabled = FALSE;
@@ -90,8 +90,8 @@
 
         
     }
-    for (CycledView *cell in itemViews) {
-        [centers addObject:[NSValue valueWithCGPoint:cell.center]];
+    for (CycledView *item in itemViews) {
+        [centers addObject:[NSValue valueWithCGPoint:item.center]];
     }
     [self slideUp];
     
@@ -129,22 +129,23 @@
         CycledView *item  = [[itemViews lastObject] retain];
         item.hidden = YES;
         [item removeFromSuperview];
+        
+        //temporarily disable animation
         [UIView setAnimationsEnabled:NO];
         item.transform = CGAffineTransformMakeScale( 0.10, 0.10);
         item.center = CGPointMake([[centers objectAtIndex:0] CGPointValue].x, [[centers objectAtIndex:0] CGPointValue].y-20);
         [UIView setAnimationsEnabled:YES];
       
-        [UIView beginAnimations:nil context:nil];
+
         for (NSInteger itemIndex = 0; itemIndex < numberOfItems-1; itemIndex++) {
-            CycledView *cell= [itemViews objectAtIndex:itemIndex];
+            CycledView *item= [itemViews objectAtIndex:itemIndex];
             [UIView beginAnimations:nil context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationDelay:0.3];
-            cell.transform = CGAffineTransformScale(CGAffineTransformIdentity, kScaleFactor+0.15*itemIndex,kScaleFactor+0.15*itemIndex);
+            item.transform = CGAffineTransformScale(CGAffineTransformIdentity, kScaleFactor+0.15*itemIndex,kScaleFactor+0.15*itemIndex);
             [UIView commitAnimations];
         }
-        
-        [UIView commitAnimations];
+    
         
         [itemViews removeObject:item];
         [itemViews insertObject:item atIndex:0];
@@ -157,11 +158,10 @@
     
     if ([value isEqualToString:@"slidedown"])
     {
-        CycledView *item;
-        [UIView beginAnimations:nil context:nil];
+       
         for (NSInteger itemIndex = 0; itemIndex < numberOfItems-1; itemIndex++) {
             
-            item= [itemViews objectAtIndex:itemIndex];
+             CycledView *item = [itemViews objectAtIndex:itemIndex];
             [UIView beginAnimations:nil context:nil];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
             [UIView setAnimationDelay:0.3];
@@ -173,23 +173,22 @@
         
         return;
     }
-    
-    
+
 }
 - (void)slideDown{
    
-    CycledView *item  = [[itemViews objectAtIndex:0] retain];
+    CycledView *fistItem  = [[itemViews objectAtIndex:0] retain];
     [itemViews removeObjectAtIndex:0];
-    [item removeFromSuperview];
-    item.hidden = NO;
-    
-    [itemViews addObject:item];
-    [item release];
-    item  = [itemViews lastObject];
+    [fistItem removeFromSuperview];
+    fistItem.hidden = NO;
+    [itemViews addObject:fistItem];
+    [fistItem release];
+    //temporarily disable animation 
     [UIView setAnimationsEnabled:NO];
+    CycledView *lastItem  = [itemViews lastObject];
     CGPoint ce = [[centers lastObject] CGPointValue];
-    item.transform = CGAffineTransformScale(CGAffineTransformIdentity, kScaleFactor+0.15*(numberOfItems-2),kScaleFactor+0.15*(numberOfItems - 2));
-    item.center = CGPointMake(ce.x,ce.y-self.bounds.size.height);
+    lastItem.transform = CGAffineTransformScale(CGAffineTransformIdentity, kScaleFactor+0.15*(numberOfItems-2),kScaleFactor+0.15*(numberOfItems - 2));
+    lastItem.center = CGPointMake(ce.x,ce.y-self.bounds.size.height);
     [UIView setAnimationsEnabled:YES];
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position"];
@@ -201,7 +200,7 @@
     [animation setDelegate:self];
     animation.fillMode = kCAFillModeForwards;
     animation.removedOnCompletion = NO;
-    [item.layer addAnimation:animation forKey:@"position"];
+    [lastItem.layer addAnimation:animation forKey:@"position"];
     
 }
 - (void)slideUp{
@@ -245,7 +244,7 @@
             [self slideDown];
         }
         else{
-            panItem.center = [[centers objectAtIndex:4] CGPointValue];
+            panItem.center = [[centers objectAtIndex:numberOfItems-1] CGPointValue];
         }
         
     }
